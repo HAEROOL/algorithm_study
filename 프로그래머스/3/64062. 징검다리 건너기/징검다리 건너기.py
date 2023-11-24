@@ -1,26 +1,21 @@
 def solution(stones, k):
     answer = 0
-    length = len(stones)
-    stone_set = sorted(set(stones))
-    i, j = stone_set[0], stone_set[-1]
+    left = 0
+    right = 2000000000
 
-    while i <= j:
-        mid = (i+j) // 2
-        candits, cnt = [], 0
-        for idx in range(length):
-            if stones[idx] <= mid:
+    
+    while left <= right:
+        mid = (left + right) // 2
+        cnt = 0
+        for stone in stones:
+            if stone - mid <= 0:
                 cnt += 1
-            else:
-                candits.append(cnt)
-                cnt = 0
-        else:
-            candits.append(cnt)
-            max_con = max(candits)
-
-        if max_con < k:
-            i = mid+1
+            else: cnt = 0
+            if cnt >= k:
+                break
+        if cnt < k:
+            left = mid + 1
         else:
             answer = mid
-            j = mid-1          
-
+            right = mid - 1
     return answer
