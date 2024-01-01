@@ -1,16 +1,16 @@
 n = int(input())
-arr = [0]
-dp = [0]
-for _ in range(n):
-    arr.append(int(input()))
+wines = []
 
-for x in range(1, 3):
-    dp.append(dp[x-1] + arr[x])
-    if n == 1 : break
+for _ in range(n):
+    wines.append(int(input()))
+
+dp = [0] * (n + 1)
+
+dp[1] = wines[0]
+if n > 1: 
+    dp[2] = wines[1] + dp[1]
+
 
 for x in range(3, n + 1):
-    a = dp[x-2] + arr[x]
-    b = dp[x-1]
-    c = arr[x] + arr[x-1] + dp[x-3]
-    dp.append(max(a,b,c))
+    dp[x] = max(dp[x - 1], dp[x - 2] + wines[x - 1], wines[x - 1] + wines[x - 2] + dp[x - 3])
 print(max(dp))
