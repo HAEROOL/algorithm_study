@@ -24,18 +24,15 @@ def bfs(v):
                 visited[x] = True
     print(*answer)
 
-def dfs(v):
-    visited = [False for _ in range(N + 1)]
-    q = deque([v])
-    answer = []
-    while q:
-        p = q.pop()
-        if not visited[p]:
-            visited[p]= True
-            answer.append(p)
-        for x in range(N, -1, -1):
-            if not visited[x] and graph[p][x]:
-                q.append(x)
-    print(*answer)
-dfs(V)
+def dfs(v, visited):
+    visited[v] = True
+    print(v, end=' ')
+    
+    for x in range(1, N + 1):
+        if not visited[x] and graph[v][x]:
+            dfs(x, visited)
+    
+    
+dfs(V, [False for _ in range(N + 1)])
+print()
 bfs(V)
