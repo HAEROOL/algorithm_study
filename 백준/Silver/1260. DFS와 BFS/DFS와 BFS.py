@@ -1,38 +1,41 @@
+from collections import deque
+
 N, M, V = map(int, input().split())
 
-graph = [[False] * (N + 1) for _ in range(N + 1)]
-for x in range(0, M):
+graph =  [[False for _ in range(N + 1)]for _ in range(N + 1)]
+
+for x in range(M):
     a, b = map(int, input().split())
     graph[a][b] = True
     graph[b][a] = True
 
-def bfs():
+
+def bfs(v):
     visited = [False for _ in range(N + 1)]
-    queue = [V]
-    visited[V] = True
+    q = deque([v])
+    visited[v] = True
     answer = []
-    while queue:
-        pointer = queue.pop(0)
-        answer.append(pointer)
+    while q:
+        p = q.popleft()
+        answer.append(p)
         for x in range(1, N + 1):
-            if not visited[x] and graph[pointer][x]:
-                queue.append(x)
+            if not visited[x] and graph[p][x]:
+                q.append(x)
                 visited[x] = True
     print(*answer)
 
-def dfs():
+def dfs(v):
     visited = [False for _ in range(N + 1)]
-    stack = [V]
+    q = deque([v])
     answer = []
-    while stack:
-        pointer = stack.pop()
-        if not visited[pointer]:
-            visited[pointer] = True
-            answer.append(pointer)
+    while q:
+        p = q.pop()
+        if not visited[p]:
+            visited[p]= True
+            answer.append(p)
         for x in range(N, -1, -1):
-            if not visited[x] and graph[pointer][x]:
-                stack.append(x)
+            if not visited[x] and graph[p][x]:
+                q.append(x)
     print(*answer)
-
-dfs()
-bfs()
+dfs(V)
+bfs(V)
