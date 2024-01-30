@@ -1,10 +1,17 @@
-n = int(input())
-d = [0] * (n + 1)
+N = int(input())
+INF = float('inf')
 
-for i in range(2, n + 1):
-    d[i] = d[i - 1] + 1
-    if i % 3 == 0:
-        d[i] = min(d[i], d[i // 3] + 1)
-    if i % 2 == 0:
-        d[i] = min(d[i], d[i // 2] + 1)
-print(d[n])
+dp = [INF] * (10**6 + 1)
+
+dp[1] = 0
+dp[2] = 1
+dp[3] = 1
+
+for x in range(4, N + 1):
+    if x % 3 == 0:
+        dp[x] = dp[x // 3] + 1
+    if x % 2 == 0:
+        dp[x] = min(dp[x], dp[x // 2] + 1)
+    dp[x] = min(dp[x], dp[x - 1] + 1)
+
+print(dp[N])
