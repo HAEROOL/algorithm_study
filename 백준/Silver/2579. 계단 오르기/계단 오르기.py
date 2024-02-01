@@ -1,18 +1,16 @@
-n = int(input())
+N = int(input())
 
-stairs = [0]
-for _ in range(n):
-    stairs.append(int(input()))
+stair = []
+for _ in range(N):
+    stair.append(int(input()))
 
+dp = [0] * N
 
-
-dp = [0] * (n + 1)
-
-if n <= 2:
-    print(sum(stairs))
+if len(stair) <= 2:
+    print(sum(stair))
 else:
-    dp[1] = stairs[1]
-    dp[2] = stairs[1] + stairs[2]
-    for x in range(3, n + 1):
-        dp[x] = max(dp[x - 2] + stairs[x], dp[x - 3] + stairs[x] + stairs[x - 1])
-    print(dp[n])
+    dp[0] = stair[0]
+    dp[1] = stair[0] + stair[1]
+    for i in range(2, N):
+        dp[i] = max(dp[i - 3] + stair[i - 1] + stair[i], dp[i - 2] + stair[i])
+    print(dp[-1])
