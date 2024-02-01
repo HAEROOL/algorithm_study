@@ -3,11 +3,11 @@ N, M = map(int, input().split())
 trees = list(map(int, input().split()))
 
 def solve(mid):
-    curr = 0
+    total = 0
     for i in trees:
         if i >= mid:
-            curr += i - mid
-    return curr >= M
+            total += i - mid
+    return total >= M
 
 st = 1
 en = max(trees)
