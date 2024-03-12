@@ -67,4 +67,3 @@ def bfs(rx, ry, bx, by):
         count += 1
     print(-1) # 10회가 초과하지 않았지만 10회 내에도 구멍에 들어가지 못하는 경우
 bfs(rx, ry, bx, by)
- 
