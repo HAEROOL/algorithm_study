@@ -1,28 +1,37 @@
-import sys
-input = sys.stdin.readline
 from collections import deque
 
 n, k = map(int, input().split())
-belt = deque(list(map(int, input().split())))
-robot = deque([0]*n)
-res = 0
 
-while 1:
-    belt.rotate(1)
-    robot.rotate(1)
-    robot[-1]=0 #로봇이 내려가는 부분이니 0
-    if sum(robot): #로봇이 존재하면
-        for i in range(n-2, -1, -1): #로봇 내려가는 부분 인덱스 i-1 이므로 그 전인 i-2부터
-            if robot[i] == 1 and robot[i+1] == 0 and belt[i+1]>=1:
-                robot[i+1] = 1
-                robot[i] = 0
-                belt[i+1] -= 1
-        robot[-1]=0 #이 부분도 로봇 out -> 0임
-    if robot[0] == 0 and belt[0]>=1:
-        robot[0] = 1
-        belt[0] -= 1
-    res += 1
-    if belt.count(0) >= k:
+belt = deque(list(map(int, input().split())))
+
+for i in range(2 * n):
+    belt[i] = [0, belt[i]]
+
+turn = 1
+total = 0
+while True:
+    if total >= k:
+        print(turn - 1)
         break
-                
-print(res)
+    #1단계
+    belt.rotate()
+    if belt[n - 1][0] == 1:
+        belt[n - 1][0] = 0
+    #2단계
+    for x in range(n - 2, -1, -1):
+        if belt[x][0] == 1 and belt[x + 1][0] == 0 and belt[x + 1][1] >= 1:
+           belt[x + 1][0] = 1
+           belt[x + 1][1] -= 1
+           if belt[x + 1][1] == 0:
+               total += 1
+           belt[x][0] = 0
+           if x + 1 == n - 1:
+               belt[x + 1][0] = 0
+    #3단계
+    if belt[0][1] >= 1:
+        belt[0][0] = 1
+        belt[0][1] -= 1
+        if belt[0][1] == 0:
+            total += 1
+    turn += 1
+ 
