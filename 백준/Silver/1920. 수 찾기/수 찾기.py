@@ -2,26 +2,23 @@ N = int(input())
 
 nums = list(map(int, input().split()))
 
-nums.sort()
-
 M = int(input())
 
-searchNums = list(map(int, input().split()))
+targets = list(map(int, input().split()))
 
+nums.sort()
 
-def binSearch(target):
+for target in targets:
     st = 0
-    en = N - 1
-
-    while st <= en:
-        mid = (st + en) // 2
-        if nums[mid] == target:
-            return 1
-        elif nums[mid] < target:
+    end = N - 1
+    answer = 0
+    while st <= end:
+        mid = (end + st)//2
+        if target > nums[mid]:
             st = mid + 1
-        elif nums[mid] > target:
-            en = mid - 1
-    return 0
-
-for target in searchNums:
-    print(binSearch(target))
+        elif target < nums[mid]:
+            end = mid - 1
+        else:
+            answer = 1
+            break
+    print(answer)
