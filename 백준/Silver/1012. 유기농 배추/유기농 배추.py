@@ -10,29 +10,26 @@ for _ in range(t):
 
     cabages = []
 
-    board = [[0 for _ in range(N)] for _ in range(M)]
-    visited = [[False for _ in range(N)] for _ in range(M)]
+    board = [[0 for _ in range(M)] for _ in range(N)]
+    visited = [[False for _ in range(M)] for _ in range(N)]
 
-    for i in range(K):
-        x, y = map(int, input().split())
-        cabages.append((x, y))
+    for _ in range(K):
+        y, x = map(int, input().split())
         board[x][y] = 1
+        cabages.append((x, y))
 
-    
-    for coord in cabages:
-        x, y = coord
-        if not visited[x][y]:
+    answer = 0
+    for cx, cy in cabages:
+        if not visited[cx][cy]:
             answer += 1
-            q = deque()
-            q.append((x, y))
-            visited[x][y] = True
+            q = deque([(cx, cy)])
+            visited[cx][cy] = True
             while q:
-                x, y = q.popleft()
-                for a in range(4):
-                    nx = x + dx[a]
-                    ny = y + dy[a]
-                    if 0 <= nx < M and 0 <= ny < N and not visited[nx][ny] and board[nx][ny] == 1:
-                        q.append((nx, ny))
+                x, y = q.pop()
+                for i in range(4):
+                    nx = x + dx[i]
+                    ny = y + dy[i]
+                    if 0<=nx<N and 0<=ny<M and not visited[nx][ny] and board[nx][ny] == 1:
+                        q.appendleft((nx, ny))
                         visited[nx][ny] = True
-                        
     print(answer)
