@@ -2,136 +2,162 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-  static int N, M;
-  static int[][] board;
-  static int[] dx = {0, 1, 0, -1};
-  static int[] dy = {1, 0, -1, 0};
-  static List<int[]> brideges;
-  static List<Deque<int[]>> islands;
-  static int ans = Integer.MAX_VALUE;
-  static void combination(int idx, int k, int[] sel){
-    if(k == sel.length){
-      int[][] map = new int[islands.size() + 1][islands.size() + 1];
-      int total = 0;
-      boolean[] v = new boolean[islands.size() + 1];
-      for(int i : sel){
-        int[] dir = brideges.get(i);
-        int to = dir[0];
-        int from = dir[1];
-        int cost = dir[2];
-        total += cost;
-        map[from][to] = cost;
-        map[to][from] = cost;
-      }
-      int st = brideges.get(0)[0];
-      dfs(st, v, map);
-      for(int i = 1; i < v.length ; i++){
-        if(!v[i]) return;
-      }
-      ans = Math.min(ans, total);
-      return;
-    }
-    if(idx == brideges.size()) return;
-    combination(idx + 1, k, sel);
-    sel[k] = idx;
-    combination(idx + 1, k + 1, sel);
+	static int N, M;
+	static int[][] map;
+	static int[] dx = { 1, 0, -1, 0 };
+	static int[] dy = { 0, 1, 0, -1 };
+	static List<int[]> bridges;
+	static int ans = Integer.MAX_VALUE;
+	static List<List<int[]>> islands;
 
-  }
+	public static void main(String[] args) throws IOException {
+		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+		int[] a = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+		N = a[0];
+		M = a[1];
+		map = new int[N][M];
 
-  static void dfs(int n, boolean[] visited, int[][] map){
-      visited[n] = true;
-      for(int i = 1 ; i < map[n].length ; i++){
-        int cost = map[n][i];
-        if(!visited[i] && cost != 0){
-          dfs(i, visited, map);
-        }
-      }
-  }
-  public static void main(String[] args) throws IOException {
-    BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-    BufferedWriter bw = new BufferedWriter( new OutputStreamWriter(System.out));
-    int[] input = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-    N = input[0];
-    M = input[1];
-    board = new int[N][M];
-    for(int i = 0 ; i < N ; i++){
-      int[] row = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
-      board[i] = row;
-    }
-    // 섬 분류
-    boolean[][] visited = new boolean[N][M];
-    islands = new ArrayList<>();
-    int num = 1;
-    for(int i = 0 ; i < N ; i++){
-      for(int j = 0 ; j < M ; j++){
-        if(!visited[i][j] && board[i][j] == 1){
-          Deque<int[]> q = new ArrayDeque<>();
-          Deque<int[]> island = new ArrayDeque<>();
-          q.offer(new int[]{i, j});
-          board[i][j] = num;
-          island.offer(new int[]{i, j});
-          visited[i][j] = true;
-          while(!q.isEmpty()){
-            int[] coord = q.poll();
-            int x = coord[0];
-            int y = coord[1];
-            for(int k = 0 ; k < 4 ; k++){
-              int nx = x + dx[k];
-              int ny = y + dy[k];
-              if(0 <= nx && nx < N && 0 <= ny && ny < M && !visited[nx][ny] && board[nx][ny] == 1){
-                visited[nx][ny] = true;
-                board[nx][ny] = num;
-                q.offer(new int[]{nx, ny});
-                island.offer(new int[]{nx, ny});
-              }
-            }
-          }
-          num++;
-          islands.add(island);
-        }
-      }
-    }
-    int[][] map = new int[islands.size() + 1][islands.size() + 1];
-    brideges = new ArrayList<>();
-    // 섬 다리 짓기
-    for(Deque<int[]> island : islands){
-      int islandN = board[island.peek()[0]][island.peek()[1]];
-      for(int[] coord : island){
-        for(int i = 0 ; i < 4 ; i++){
-          int x = coord[0];
-          int y = coord[1];
-          int cnt = 0;
-          while(true){
-            int nx = x + dx[i];
-            int ny = y + dy[i];
-            if(0 <= nx && nx < N && 0 <= ny && ny < M){
-              if(board[nx][ny] == islandN) break;
-              if(board[nx][ny] != 0){
-                if(cnt == 1){
-                  break;
-                }
-                map[islandN][board[nx][ny]] = map[islandN][board[nx][ny]] == 0 ? cnt : Math.min(cnt, map[islandN][board[nx][ny]]);
-                break;
-              }
-              x = nx;
-              y = ny;
-              cnt++;
-            }else{
-              break;
-            }
-          }
-        }
-      }
-    }
-    for(int i = 1 ; i < map.length ; i++){
-      for(int j = i + 1 ; j < map.length ; j++){
-        if(map[i][j] != 0){
-          brideges.add(new int[]{i, j, map[i][j]});
-        }
-      }
-    }
-    // mst 찾기
-    combination(0, 0, new int[islands.size() - 1]);
-    System.out.println(ans == Integer.MAX_VALUE?-1:ans);
-  }
+		for (int i = 0; i < N; i++) {
+			int[] row = Arrays.stream(br.readLine().split(" ")).mapToInt(Integer::parseInt).toArray();
+			map[i] = row;
+		}
+		boolean[][] visited = new boolean[N][M];
+		int n = 1;
+		islands = new ArrayList<List<int[]>>();
+		islands.add(new ArrayList<>());
+		for (int i = 0; i < N; i++) {
+			for (int j = 0; j < M; j++) {
+				if (!visited[i][j] && map[i][j] == 1) {
+					List<int[]> l = new ArrayList<int[]>();
+					Deque<int[]> q = new ArrayDeque<int[]>();
+					visited[i][j] = true;
+					map[i][j] = n;
+					q.add(new int[] { i, j });
+					l.add(new int[] { i, j });
+					while (!q.isEmpty()) {
+						int[] coord = q.poll();
+						int x = coord[0];
+						int y = coord[1];
+						for (int d = 0; d < 4; d++) {
+							int nx = x + dx[d];
+							int ny = y + dy[d];
+							if (0 <= nx && nx < N && 0 <= ny && ny < M) {
+								if (!visited[nx][ny] && map[nx][ny] == 1) {
+									visited[nx][ny] = true;
+									map[nx][ny] = n;
+									q.add(new int[] { nx, ny });
+									l.add(new int[] { nx, ny });
+								}
+							}
+						}
+					}
+					n++;
+					islands.add(l);
+				}
+			}
+		}
+		bridges = new ArrayList<int[]>();
+		int[][] distMap = new int[islands.size()][islands.size()];
+		for (int i = 1; i < islands.size(); i++) {
+			List<int[]> island = islands.get(i);
+			for (int[] coord : island) {
+				int x = coord[0];
+				int y = coord[1];
+				for (int d = 0; d < 4; d++) {
+					int dist = 0;
+					while (true) {
+						int nx = x + dx[d];
+						int ny = y + dy[d];
+						dist++;
+						if (0 <= nx && nx < N && 0 <= ny && ny < M) {
+							if (map[nx][ny] == i)
+								break;
+							if (map[nx][ny] != 0) {
+								if (dist == 2)
+									break;
+								dist--;
+								int from = i;
+								int to = map[nx][ny];
+								if (distMap[from][to] == 0) {
+									distMap[from][to] = dist;
+									distMap[to][from] = dist;
+								} else {
+									distMap[from][to] = Math.min(distMap[from][to], dist);
+									distMap[to][from] = Math.min(distMap[from][to], dist);
+								}
+								break;
+							}
+							x = nx;
+							y = ny;
+						} else {
+							break;
+						}
+					}
+					x = coord[0];
+					y = coord[1];
+				}
+			}
+		}
+		for (int i = 0; i < distMap.length; i++) {
+			for (int j = i + 1; j < distMap.length; j++) {
+				if (distMap[i][j] != 0) {
+					bridges.add(new int[] { i, j, distMap[i][j] });
+				}
+			}
+		}
+		comb(0, 0, new int[islands.size() - 2], bridges.size());
+		System.out.println(ans == Integer.MAX_VALUE ? -1 : ans);
+	}
+
+	static void comb(int idx, int k, int[] sel, int c) {
+		if (k > c) {
+			return;
+		}
+		if (idx == sel.length) {
+//			System.out.println(Arrays.toString(sel));
+			int st = -1;
+			int[][] newMap = new int[islands.size()][islands.size()];
+			int total = 0;
+			boolean[] v = new boolean[islands.size()];
+			for (int j : sel) {
+				int[] bridge = bridges.get(j);
+				int from = bridge[0];
+				int to = bridge[1];
+				int cost = bridge[2];
+				if (st == -1) {
+					st = from;
+				}
+				total += cost;
+				newMap[from][to] = cost;
+				newMap[to][from] = cost;
+			}
+			dfs(newMap, v, st);
+			boolean isconnect = true;;
+			for (int j = 1; j < v.length; j++) {
+				if (!v[j]) {
+					isconnect = false;
+					break;
+				}
+			}
+			if(isconnect) {
+				ans = Math.min(ans, total);
+				
+			}
+			return;
+		}
+		
+		sel[idx] = k;
+		comb(idx + 1, k + 1, sel, c);
+		comb(idx, k + 1, sel, c);
+	}
+
+	static void dfs(int[][] map, boolean[] v, int st) {
+		v[st] = true;
+		for (int i = 0; i < map[st].length; i++) {
+			if (map[st][i] != 0 && !v[i]) {
+				dfs(map, v, i);
+			}
+		}
+	}
 }
