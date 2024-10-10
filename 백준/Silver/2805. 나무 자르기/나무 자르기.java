@@ -36,6 +36,7 @@ public class Main {
 			}
 			if(total >= M) {
 				start = mid + 1;
+				ans = mid;
 			}else {
 				end = mid - 1;
 			}
