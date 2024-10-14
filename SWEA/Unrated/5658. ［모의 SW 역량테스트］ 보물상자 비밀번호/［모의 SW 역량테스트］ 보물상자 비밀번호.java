@@ -1,65 +1,35 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.Deque;
-import java.util.HashSet;
-import java.util.List;
-import java.util.PriorityQueue;
-import java.util.Set;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Solution {
-
-	public static void main(String[] args) throws NumberFormatException, IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+	public static void main(String[] args) throws IOException {
 		int TC = Integer.parseInt(br.readLine());
-		for(int tc = 1 ; tc < TC + 1 ;tc++) {
-			// 입력
+		for(int tc = 1 ; tc <= TC ; tc++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			int N = Integer.parseInt(st.nextToken());
 			int K = Integer.parseInt(st.nextToken());
-			List<String> q = new ArrayList<String>();
-			String[] input = br.readLine().split("");
-			for(int i = 0 ; i < N ; i++) {
-				q.add(input[i]);
-			}
-			
-			Set<Long> s = new HashSet<Long>();
-			// 숫자 구하기
-			for(int k = 0 ; k < N / 4 ; k++) {
-				for(int i = 0 ; i < 4 ; i++) {
-					String num[] = new String[N / 4];
-					for(int j = 0; j < N / 4 ; j++) {
-						num[j] = q.get(i*N/4 + j);
+			List<String> q = new ArrayList<String>(Arrays.asList(br.readLine().split("")));
+			Set<String> set = new HashSet<>();
+			for(int r = 0 ; r < N / 4 ; r++) {
+				for(int i = 0 ; i < N ; i += N / 4) {
+					String tmp = "";
+					for(int s = i ; s <i +  N / 4 ; s++) {
+						tmp += q.get(s);
 					}
-					// 숫자 변
-//					System.out.println(Arrays.toString(num));
-					long hexNum = getHex(num);
-					s.add(hexNum);
+					set.add(tmp);
 				}
-				q.add(0, q.remove(q.size() - 1));
+				q.add(0, q.remove(N - 1));
 			}
-			List<Long> result = new ArrayList<Long>(s);
-			Collections.sort(result, (x, y) -> Long.compare(y, x));
-//			System.out.println(result.toString());
-			bw.write("#"+ tc + " " + result.get(K - 1) + "\n");
-			bw.flush();
-		 	
+			List<Integer> list = new ArrayList<>();
+			for(String s : set) {
+				list.add(Integer.parseInt(s, 16));
+			}
+			Collections.sort(list, (a, b) -> b - a);
+			bw.write("#" + tc + " " + list.get(K - 1) + "\n");
 		}
-	}
-	static long getHex(String[] num) {
-		long res = 0;
-		for(int i = num.length - 1 ; i > -1; i--) {
-			res += Long.parseLong(num[num.length - i - 1], 16) * Math.pow(16, i);
-		}
-		return res;
+		bw.close();
 	}
 
 }
