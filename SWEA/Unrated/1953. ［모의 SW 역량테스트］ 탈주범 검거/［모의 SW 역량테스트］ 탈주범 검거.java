@@ -1,19 +1,13 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayDeque;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Deque;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Solution {
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-	static int total;
+	static int N, M, R, C, L;
+	static int[][] map;
+	static int[] dx = {1, 0, -1, 0};
+	static int[] dy = {0, 1, 0, -1};
 	static int[][] pipeD = {
 			{0, 1, 2, 3},
 			{0, 2},
@@ -23,12 +17,6 @@ public class Solution {
 			{0, 3},
 			{2, 3}
 	};
-
-	static int[] dx = {1, 0, -1, 0};
-	static int[] dy = {0, 1, 0, -1};
-	static int N, M, R, C, L;
-	static int[][] map;
-	
 	static boolean check(int nx, int ny, int x, int y) {
 		int pipe = map[nx][ny] - 1;
 		for(int i = 0 ; i < pipeD[pipe].length ; i++) {
@@ -42,17 +30,16 @@ public class Solution {
 		}
 		return false;
 	}
-	
-	static void bfs() {
+	static int bfs(int sx, int sy) {
 		Deque<int[]> q = new ArrayDeque<>();
-		boolean[][] visited = new boolean[N][M];
-		q.offer(new int[] {R, C});
-		visited[R][C] = true;
-		total = 1;
+		q.add(new int[] {sx, sy});
+		boolean[][] v = new boolean[N][M];
+		v[sx][sy] = true;
 		int time = 1;
+		int cnt = 1;
 		while(!q.isEmpty()) {
+			if(time == L) break;
 			int size = q.size();
-			if(time == L) return;
 			for(int s = 0 ; s < size ; s++) {
 				int[] coord = q.poll();
 				int x = coord[0];
@@ -61,23 +48,23 @@ public class Solution {
 				for(int i = 0 ; i < pipeD[pipe].length ; i++) {
 					int nx = x + dx[pipeD[pipe][i]];
 					int ny = y + dy[pipeD[pipe][i]];
-					if(0 <= nx && nx < N && 0 <= ny && ny < M) {
-						if(!visited[nx][ny] && map[nx][ny] != 0 && check(nx, ny, x, y)) {
+					if(0 <= nx && nx < N && 0 <= ny && ny < M && !v[nx][ny] && map[nx][ny] != 0) {
+						if(check(nx, ny, x, y)) {
+							cnt++;
 							q.offer(new int[] {nx, ny});
-							visited[nx][ny] = true;
-							total += 1;
+							v[nx][ny] = true;
 						}
 					}
-				}
+				}				
 			}
 			time++;
 		}
+		return cnt;
 	}
 	
 	public static void main(String[] args) throws IOException {
-		int T = Integer.parseInt(br.readLine());
-		for (int tc = 1; tc < T + 1; tc++) {
-			total = 0;
+		int TC = Integer.parseInt(br.readLine());
+		for (int tc = 1; tc <= TC; tc++) {
 			StringTokenizer st = new StringTokenizer(br.readLine());
 			N = Integer.parseInt(st.nextToken());
 			M = Integer.parseInt(st.nextToken());
@@ -91,9 +78,11 @@ public class Solution {
 					map[i][j] = Integer.parseInt(st.nextToken());
 				}
 			}
-			bfs();
-			bw.write("#" + tc + " " + total + "\n");
+			
+			int ans = bfs(R, C);
+			bw.write("#" + tc + " " + ans + "\n");
 		}
 		bw.close();
 	}
+
 }
