@@ -2,9 +2,9 @@ import java.io.*;
 import java.util.*;
 
 public class Main {
-
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 	public static void main(String[] args) throws IOException{
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 		int n = Integer.parseInt(br.readLine());
 		int[] arr = new int[n];
 		StringTokenizer st = new StringTokenizer(br.readLine());
@@ -40,6 +40,7 @@ public class Main {
 				
 			}
 		}
-		System.out.println(arr[r1]+" " + arr[r2] + " " + arr[r3]);
+		bw.write(arr[r1]+" " + arr[r2] + " " + arr[r3]);
+		bw.close();
 	}
 }
