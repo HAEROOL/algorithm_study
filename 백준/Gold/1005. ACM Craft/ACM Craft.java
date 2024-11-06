@@ -42,6 +42,7 @@ public class Main {
 			}
 			while(!q.isEmpty()) {
 				int n = q.poll();
+				if(n == target) break;
 				for(int next : map[n]) {
 					degrees[next]--;
 					dptimes[next] = Math.max(dptimes[next], times[next] + dptimes[n]);
