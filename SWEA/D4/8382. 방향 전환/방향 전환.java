@@ -8,31 +8,46 @@ public class Solution {
 	static int[] dx = { 0, 0, 1, -1 };
 	static int x1, x2, y1, y2;
 	static int ans;
-	static boolean[][] v;
-	static void bfs(int x, int y, boolean dir) {
-		int cnt = 0;
-		while(true) {
-			if(x == x2 && y == y2) {
-				break;
-			}
-			if(dir) {
-				if(x > x2) {
-					x--;
-				}else {
-					x++;
+	static boolean[][][] v;
+	static void bfs(int sx, int sy, int d) {
+		v = new boolean[202][202][2];
+		Deque<int[]> q = new ArrayDeque<>();
+		q.add(new int[] {sx, sy, d, 0});
+		v[sy][sx][d] = true;
+		while(!q.isEmpty()) {
+				int[] coord = q.poll();
+				int x = coord[0];
+				int y = coord[1];
+				int dir = coord[2];
+				int cnt = coord[3];
+				if(x == x2 && y == y2) {
+					ans = Math.min(ans, cnt);
+					return;
 				}
-				dir = false;
-			}else {
-				if(y > y2) {
-					y--;
+				if(dir == 1) {
+					for(int i = 2 ; i < 4 ; i++) {
+						int nx = x + dx[i];
+						int ny = y + dy[i];
+						if(0 <= nx && nx < 202 && 0 <= ny && ny < 202) {
+							if(!v[ny][nx][dir]) {
+								v[ny][nx][dir] = true;
+								q.add(new int[] {nx, ny, 0, cnt + 1});
+							}
+						}
+					}
 				}else {
-					y++;
+					for(int i = 0 ; i < 2 ; i++) {
+						int nx = x + dx[i];
+						int ny = y + dy[i];
+						if(0 <= nx && nx < 202 && 0 <= ny && ny < 202) {
+							if(!v[ny][nx][dir]) {
+								v[ny][nx][dir] = true;
+								q.add(new int[] {nx, ny, 1, cnt + 1});
+							}
+						}
+					}
 				}
-				dir = true;
-			}
-			cnt++;
 		}
-		ans = Math.min(ans, cnt);
 	}
 	public static void main(String[] args) throws IOException {
 		int TC = Integer.parseInt(br.readLine());
@@ -43,8 +58,8 @@ public class Solution {
 			y1 = Integer.parseInt(st.nextToken()) + 100;
 			x2 = Integer.parseInt(st.nextToken()) + 100;
 			y2 = Integer.parseInt(st.nextToken()) + 100;
-			bfs(x1, y1, true);
-			bfs(x1, y1, false);
+			bfs(x1, y1, 0);
+			bfs(x1, y1, 1);
 			bw.write("#" + tc + " " + ans + "\n");
 		}
 		bw.close();
