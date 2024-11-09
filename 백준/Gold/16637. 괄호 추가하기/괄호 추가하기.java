@@ -1,56 +1,47 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Main {
-	static List<Integer> nums = new ArrayList<Integer>();
-	static List<String> ops = new ArrayList<String>();
-	static void run(int idx, int total) {
-		if(idx >= ops.size()) {
-			ans = Math.max(ans, total);
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+	static int cal(int a, int b, String op) {
+//		System.out.println(a + op + b);
+		int res = -1;
+		if(op.equals("+")) {
+			res = a + b;
+		}else if(op.equals("-")) {
+			res = a - b;
+		}else if(op.equals("*")) {
+			res = a * b;
+		}
+		return res;
+	}
+	static void backtracking(int idx, int total) {
+		if(idx == N - 1) {
+			ans = Math.max(total, ans);
 			return;
 		}
-		run(idx + 1, cal(ops.get(idx), total, nums.get(idx + 1)));
-		if(idx + 1 < ops.size()) {
-			int tmp = cal(ops.get(idx + 1), nums.get(idx + 1), nums.get(idx + 2));
-			int res = cal(ops.get(idx), total, tmp);
-			run(idx + 2, res);
+//		System.out.println(total);
+		backtracking(idx + 2, cal(total, Integer.parseInt(input[idx + 2]), input[idx + 1]));
+		if(idx + 4 < N) {
+			int a = Integer.parseInt(input[idx + 2]);
+			String op = input[idx + 3];
+			int b = Integer.parseInt(input[idx + 4]);
+			int res = cal(a, b, op);
+//			System.out.println(res);
+			backtracking(idx + 4, cal(total, res, input[idx + 1]));
 		}
-		
 	}
-	static int cal(String op, int a, int b) {
-		if(op.equals("*")) {
-			return a * b;
-		}
-		if(op.equals("+")) {
-			return a + b;
-		}
-		if(op.equals("-")) {
-			return a - b;
-		}
-		return 1;	
-	}
-	static int ans = Integer.MIN_VALUE;
+	static int ans, N;
+	static String[] input;
 	public static void main(String[] args) throws IOException {
-		BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-		int N = Integer.parseInt(br.readLine());
-		String[] input = br.readLine().split("");
-		for(int i = 0 ; i < N ; i++) {
-			if(i % 2 == 0) {
-				nums.add(Integer.parseInt(input[i]));
-			}else {
-				ops.add(input[i]);
-			}
-		}
-		run(0, nums.get(0));
-		bw.write(ans + "");
-		bw.flush();
+		N = Integer.parseInt(br.readLine());
+		ans = Integer.MIN_VALUE;
+		input = br.readLine().split("");
+		backtracking(0, Integer.parseInt(input[0]));
+		System.out.println(ans);
+		bw.close();
+
 	}
+
 }
