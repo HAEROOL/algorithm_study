@@ -1,54 +1,44 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.StringTokenizer;
+import java.io.*;
+import java.util.*;
 
 public class Solution {
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
-	static int[][] map;
-	static int X, N;
+	static int[] ans = null;
 	static boolean check(int[] arr) {
-		int idx = 1;
-		boolean[] v = new boolean[arr.length];
-		// 높아지는 경우
-		while(true) {
-			if(idx == N) break;
-			// 오른쪽이 왼쪽보다 큰 경우
-			if(Math.abs(arr[idx] - arr[idx - 1]) > 1) return false;
-			if(arr[idx] + 1 == arr[idx - 1]) {
-				int base = arr[idx];
-				if(idx + X > N) return false;
-				for(int i = idx ; i < idx + X ; i++) {
-					
-					if(arr[i] != base) return false;
-					v[i] = true;
+		boolean[] v = new boolean[N];
+		for(int i = 0 ; i < N - 1 ; i++) {
+			if(arr[i] == arr[i + 1]) continue;
+			// 1.내 다음이 1 작은 경
+			if(arr[i] - arr[i + 1] == 1) {
+				// i + 1 포함 앞으로 X칸 안되면 
+				if(i + X >= N) return false;
+				for(int j = 1 ; j < X ; j++) {
+					if(arr[i + 1 + j] == arr[i + 1]) {
+						if(v[i + 1 + j]) return false;
+						v[i + 1 + j] = true;
+					}else {
+						return false;
+					}
 				}
-				idx += X - 1;
-			}else if(arr[idx] - 1 == arr[idx - 1]) {
-				int base = arr[idx - 1];
-				if(idx - X < 0) return false;
-				for(int i = idx - 1 ; i > idx - X - 1 ; i--) {
-					if(v[i]) return false;
-					if(arr[i] != base) return false;
-					v[i] = true;
-				}
-				idx++;
-			}else {
-				idx++;
 			}
+			// 2.내 다음이 1 클 경우
+			else if(arr[i] - arr[i + 1] == -1) {
+				// i포함 뒤로 X칸 안되면 
+				if(i + 1 - X < 0) return false;
+				// i포함 뒤로 X칸같아야 한다.
+				for(int j = 0 ; j < X ; j++) {
+					if(arr[i - j] != arr[i]) return false;
+					if(v[i - j]) return false;
+				}
+			}else {
+				return false;
+			}
+
 		}
 		return true;
 	}
-	static int[] reverse(int[] arr) {
-		int[] res = new int[arr.length];
-		for(int i = 0 ; i < arr.length ; i++) {
-			res[i] = arr[arr.length - 1 - i];
-		}
-		return res;
-	}
+	static int N, X;
 	public static void main(String[] args) throws IOException {
 		int TC = Integer.parseInt(br.readLine());
 		for (int tc = 1; tc < TC + 1; tc++) {
@@ -56,33 +46,30 @@ public class Solution {
 			N = Integer.parseInt(st.nextToken());
 			X = Integer.parseInt(st.nextToken());
 			int[][] map = new int[N][N];
-			for (int i = 0; i < N; i++) {
+			for(int i = 0 ; i < N ; i++) {
 				st = new StringTokenizer(br.readLine());
-				for (int j = 0; j < N; j++) {
+				for(int j = 0 ; j < N ; j++) {
 					map[i][j] = Integer.parseInt(st.nextToken());
 				}
 			}
 			int cnt = 0;
 			for(int i = 0 ; i < N ; i++) {
-				int[] rev = reverse(map[i]);
-				if(check(map[i]) && check(rev)) {
-//					System.out.println(Arrays.toString(map[i]) + " " + cnt);
+				if(check(map[i])) {
 					cnt++;
 				}
 			}
-			for(int i = 0 ; i < N ; i++) {
+			for(int j = 0 ; j < N ; j++) {
 				int[] arr = new int[N];
-				for(int j = 0 ; j < N ; j++) {
-					arr[j] = map[j][i];
+				for(int i = 0 ; i < N ; i++) {
+					arr[i] = map[i][j];
 				}
-				if(check(arr) && check(reverse(arr))) {
-//					System.out.println(Arrays.toString(map[i]) + " " + cnt);
+				if(check(arr)) {
 					cnt++;
 				}
 			}
 			bw.write("#" + tc + " " + cnt + "\n");
+			
 		}
 		bw.close();
 	}
-
 }
