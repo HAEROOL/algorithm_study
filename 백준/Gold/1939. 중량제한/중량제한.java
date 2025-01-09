@@ -21,7 +21,7 @@ public class Main {
 			int limit = n[1];
 			if(v[node]) continue;
 			v[node] = true;
-			
+			if(node == end) return limit;
 			for(int[] next : map[node]) {
 				int nextNode = next[0];
 				int nextLimit = next[1];
