@@ -1,5 +1,4 @@
 import java.io.*;
-import java.lang.reflect.Array;
 import java.util.*;
 
 public class Main {
@@ -7,50 +6,58 @@ public class Main {
     static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
     static int N, M;
     static int[] lecs;
-    static int ans = Integer.MAX_VALUE;
-    static void search(int mx){
-        int start = mx;
-        int end = 0;
-        for(int l : lecs) end += l;
-
+    
+    static int binarySearch(int maxLecture, long sumLectures){
+        int start = maxLecture;
+        int end = (int) sumLectures;
+        int answer = end;
+        
         while(start <= end){
-//            System.out.println(start + "/" + end);
-            int mid = (start + end) / 2;
-            int sum = 0;
-            int cnt = 1;
-            for(int i = 0 ; i < N ; i++){
-                sum += lecs[i];
-                if(sum > mid){
-                    sum = lecs[i];
-                    cnt++;
-                    if(cnt > M) break;
+            int mid = start + (end - start) / 2;
+            int count = 1;
+            int currentSum = 0;
+            
+            for(int i = 0; i < N; i++){
+                if(currentSum + lecs[i] > mid){
+                    count++;
+                    currentSum = lecs[i];
+                }
+                else{
+                    currentSum += lecs[i];
                 }
             }
-            // 3개 안에 분리가 안된다 -> 제한 크기를 늘려야됨
-            if(cnt > M){
+            
+            if(count > M){
                 start = mid + 1;
-            // 3개 안에 분리가 된다 -> 제한 크기를 줄여도 됨
-
-            }else{
-                ans = Math.min(ans, mid);
+            }
+            else{
+                answer = Math.min(answer, mid);
                 end = mid - 1;
             }
         }
-        System.out.println(ans);
+        
+        return answer;
     }
+    
     public static void main(String[] args) throws IOException {
         StringTokenizer st = new StringTokenizer(br.readLine());
         N = Integer.parseInt(st.nextToken());
         M = Integer.parseInt(st.nextToken());
         lecs = new int[N];
         st = new StringTokenizer(br.readLine());
-        int mx = -1;
-        for(int i = 0 ; i < N ; i++){
+        int maxLecture = 0;
+        long sumLectures = 0;
+        for(int i = 0; i < N; i++){
             lecs[i] = Integer.parseInt(st.nextToken());
-            mx = Math.max(mx, lecs[i]);
+            if(lecs[i] > maxLecture){
+                maxLecture = lecs[i];
+            }
+            sumLectures += lecs[i];
         }
 
-        search(mx);
-
+        int ans = binarySearch(maxLecture, sumLectures);
+        bw.write(ans + "\n");
+        bw.flush();
+        bw.close();
     }
 }
