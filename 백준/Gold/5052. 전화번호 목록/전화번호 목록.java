@@ -5,44 +5,36 @@ public class Main {
 	static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static class Node{
-		Map<Character, Node> childs;
+		Node[] childs;
 		boolean endOfWord;
 		public Node() {
-			this.childs = new HashMap();
+			this.childs = new Node[10];
 			this.endOfWord = false;
 		}
-		public void insert(String word) {
+		public boolean insert(String word) {
 			Node node = this;
 			for(int i = 0 ; i < word.length() ; i++) {
-				char c = word.charAt(i);
+				int idx = word.charAt(i) - '0';
 				
-				node.childs.putIfAbsent(c, new Node());
-				node = node.childs.get(c);
+				if(node.childs[idx] == null) {
+					node.childs[idx] = new Node();
+				}
 				
-				if(i == word.length() - 1) {
-					node.endOfWord = true;
-					return;
-				}
-			}
-		}
-		
-		public boolean contains(String word) {
-			Node node = this;
-			for(int i = 0 ; i < word.length() ; i++) {
-				char c = word.charAt(i);
-				Node n = node.childs.get(c);
-				if(n == null) {
-					return false;
-				}
-				node = n;
-			}
-			if(node.endOfWord) {
-				if(node.childs.isEmpty()) {
+				node = node.childs[idx];
+				
+				if(node.endOfWord && i != word.length() - 1) {
 					return false;
 				}
 			}
+			for(int i = 0 ; i < 10 ; i++) {
+				if(node.childs[i] != null) {
+					return false;
+				}
+			}
+			node.endOfWord = true;
 			return true;
 		}
+		
 	}
 	public static void main(String[] args) throws IOException {
 		StringTokenizer st = new StringTokenizer(br.readLine());
@@ -51,17 +43,12 @@ public class Main {
 			int N = Integer.parseInt(br.readLine());
 			boolean ans = true;
 			Node root = new Node();
-			List<String> keys = new ArrayList();
 			for(int i = 0 ; i < N ; i++) {
 				String input = br.readLine();
-				root.insert(input);
-				keys.add(input);
-			}
-			for(String key : keys) {
-				if(root.contains(key)) {
+				if(!root.insert(input)) {
 					ans = false;
-					break;
 				}
+
 			}
 			bw.write((!ans?"NO":"YES") + "\n");
 			
