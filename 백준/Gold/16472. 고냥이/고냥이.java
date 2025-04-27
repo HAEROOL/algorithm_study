@@ -7,38 +7,30 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken());
-		String[] strs = br.readLine().split("");
+		char[] strs = br.readLine().toCharArray();
 		int ans = 0;
 		int left = 0;
 		int right = 0;
-		Set<String> set = new HashSet<String>();
+		int cnt = 0;
+		int[] freq = new int[26];
 		while(right < strs.length) {
-			String str = strs[right];
-//			System.out.println(left);
-			if(set.contains(str)) {
-				right++;
-			}else {
-				if(set.size() < N) {
-					set.add(str);
-					right++;
-				}else {
-					Set<String> s = new HashSet<String>();
-					left = right;
-					s.add(str);
-					while(true) {
-						left--;
-						String lstr = strs[left];
-						if(!s.contains(lstr) && s.size() == N) break;
-						s.add(lstr);
-					}
-					left++;
-					set = s;
+			int idx = strs[right] - 'a';
+			right++;
+			if(freq[idx]++ == 0) {
+				cnt++;
+			}
+			while(cnt > N) {
+				int iidx = strs[left] - 'a';
+				left++;
+				freq[iidx]--;
+				if(freq[iidx] == 0) {
+					cnt--;
 				}
 			}
 //			for(int i = left ; i < right ; i++) {
 //				System.out.print(strs[i]);
 //			}
-//			System.out.println(set.toString());
+//			System.out.println();
 			ans = Math.max(ans, right - left);
 		}
 		bw.write(ans + "");
