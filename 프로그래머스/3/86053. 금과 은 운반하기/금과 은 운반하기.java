@@ -17,13 +17,12 @@ class Solution {
                 totalSilver += Math.min(tmp, s[i]);
                 
             }
-            System.out.println(start + " " + end + " " + mid + " " + total + " "+ totalGold + " "+ totalSilver + " ");
+            // System.out.println(start + " " + end + " " + mid + " " + total + " "+ totalGold + " "+ totalSilver + " ");
             if(totalGold >= a && totalSilver >= b && total >= a + b){
                 end = mid;
                 answer = mid;
             }else{
                 start = mid + 1;
-                answer = mid + 1;
             }
         }
         return answer;
