@@ -1,43 +1,35 @@
 import java.util.*;
 
 class Solution {
-    static Map<String, Integer> map = new HashMap<>();
-    static Set<String> set = new HashSet<>();
+    Map<String, String> map = new HashMap<>();
     public int solution(String s) {
-        map.put("zero", 0);
-        map.put("one", 1);
-        map.put("two", 2);
-        map.put("three", 3);
-        map.put("four", 4);
-        map.put("five", 5);
-        map.put("six", 6);
-        map.put("seven", 7);
-        map.put("eight", 8);
-        map.put("nine", 9);
-        set.add("0");
-        set.add("1");
-        set.add("2");
-        set.add("3");
-        set.add("4");
-        set.add("5");
-        set.add("6");
-        set.add("7");
-        set.add("8");
-        set.add("9");
-        String answer = "";
+        map.put("zero", "0");
+        map.put("one", "1");
+        map.put("two", "2");
+        map.put("three", "3");
+        map.put("four", "4");
+        map.put("five", "5");
+        map.put("six", "6");
+        map.put("seven", "7");
+        map.put("eight", "8");
+        map.put("nine", "9");
         String[] strs = s.split("");
-        String str = "";
+        String answer = "";
+        String token = "";
         for(int i = 0 ; i < strs.length ; i++){
-            if(set.contains(strs[i])){
-                answer += Integer.parseInt(strs[i]);
-                continue;
-            }
-            str += strs[i];
-            if(map.containsKey(str)){
-                answer += map.get(str);
-                str = "";
+            if(map.containsValue(strs[i])){
+                System.out.println(strs[i]);
+                answer += strs[i];
+            }else{
+                token += strs[i];
+                if(map.containsKey(token)){
+                    answer += map.get(token);
+                    token = "";
+                }
             }
         }
+        // System.out.println(answer);
         return Integer.parseInt(answer);
+        // return 123;
     }
 }
