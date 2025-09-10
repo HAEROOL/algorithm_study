@@ -1,33 +1,28 @@
 import java.util.*;
 
 class Solution {
-    static String[] convertCode(int n, int num){
-        String[] res = new String[n];
-        Arrays.fill(res, " ");
-        int base = num;
-        int point = n - 1;
-        // System.out.println(num);
-        while(base >= 1){
-            if(base % 2 == 1){
-                res[point] = "#";
+    public String parseString(int num1, int num2, int n){
+        String tmp = Integer.toBinaryString(num1 | num2);
+        while(tmp.length() < n){
+            tmp = "0" + tmp;
+        }
+        String res = "";
+        String[] tokens = tmp.split("");
+        // System.out.println(Arrays.toString(tokens));
+        for(String s : tokens){
+            if(s.equals("1")){
+                res += "#"; 
             }else{
-                res[point] = " ";
+                res += " ";
             }
-            point--;
-            base /= 2;
         }
         return res;
     }
     public String[] solution(int n, int[] arr1, int[] arr2) {
+        // 문자열 파싱
         String[] answer = new String[n];
-        String[][] map1 = new String[n][n];
-        String[][] map2 = new String[n][n];
-        String[][] map3 = new String[n][n];
-        for(int i = 0 ; i < arr1.length ; i++){
-            int tmp = arr1[i] | arr2[i];
-            String res = String.join("",convertCode(n, tmp));
-            answer[i] = res;
-            
+        for(int i = 0 ; i < n ; i++){
+            answer[i] = parseString(arr1[i], arr2[i], n);
         }
         return answer;
     }
