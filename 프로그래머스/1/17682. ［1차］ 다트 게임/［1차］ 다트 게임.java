@@ -3,44 +3,47 @@ import java.util.*;
 class Solution {
     public int solution(String dartResult) {
         int answer = 0;
-        String[] strs = dartResult.split("");
-        List<Integer> nums = new ArrayList<>();
-        String token = "";
-        for(int i = 0 ; i < strs.length ; i++){
-            if(strs[i].equals("S") || strs[i].equals("D") || strs[i].equals("T")){
-                int n = Integer.parseInt(token);
-                if(strs[i].equals("D")){
-                    n = (int)Math.pow(n, 2);
-                }else if(strs[i].equals("T")){
-                    n = (int)Math.pow(n, 3);
+        String[] tokens = dartResult.split("");
+        Stack<Integer> s = new Stack<>();
+        
+        int tmp = 0;
+        
+        for(int i = 0 ; i < tokens.length ; i++){
+            String tkn = tokens[i];
+            
+            if(tkn.equals("S")){
+                s.push(tmp);
+                tmp = 0;
+            }else if(tkn.equals("D")){
+                s.push(tmp * tmp);
+                tmp = 0;
+            }else if(tkn.equals("T")){
+                s.push(tmp * tmp * tmp);
+                tmp = 0;
+            }else if(tkn.equals("*")){
+                if(s.size() > 1){
+                    int ex = s.pop();
+                    int ex2 = s.pop();
+                    s.push(ex2 * 2);   
+                    s.push(ex * 2);
+                     
+                }else{
+                    int ex = s.pop();
+                    s.push(ex * 2);
                 }
-                nums.add(n);
-                token = "";
-            }else if(strs[i].equals("#") || strs[i].equals("*")){
-                if(strs[i].equals("#")){
-                    int cur = nums.get(nums.size() - 1) * -1;
-                    nums.remove(nums.size() - 1);
-                    nums.add(cur);                             
-                }else if(strs[i].equals("*")){
-                    int cur = nums.get(nums.size() - 1) * 2;
-                    int prev = 0;
-                    if(nums.size() > 1){
-                        prev = nums.get(nums.size() - 2) * 2;
-                    }
-                    nums.remove(nums.size() - 1);
-                    if(prev != 0) {
-                        nums.remove(nums.size() - 1);
-                        nums.add(prev);
-                    }
-                    nums.add(cur);
-                }
+                
+            }else if(tkn.equals("#")){
+                int ex = s.pop();
+                s.push(ex * -1);
             }else{
-                token += strs[i];
+                tmp = Integer.parseInt(tmp + tkn);
             }
+            
         }
-        // System.out.println(nums);
-        for(int i : nums){
-            answer += i;
+        while(!s.isEmpty()){
+            int a = s.pop();
+            // System.out.println(a);  
+            answer += a;
         }
         return answer;
     }
