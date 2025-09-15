@@ -13,14 +13,13 @@ public class Main {
 		Deque<int[]> q = new ArrayDeque<>();
 		q.offer(new int[] {sx, sy, 0});
 		v[sx][sy] = true;
-		int res = Integer.MAX_VALUE;
 		while(!q.isEmpty()) {
 			int[] coord = q.poll();
 			int x = coord[0];
 			int y = coord[1];
 			
 			if(board[x][y] == 1) {
-				res = Math.min(res, coord[2]);
+				return coord[2];
 			}
 			
 			for(int i = 0 ; i < 8 ; i++) {
@@ -32,7 +31,7 @@ public class Main {
 				}
 			}
 		}
-		return res;
+		return 0;
 	}
 	public static void main(String[] args) throws IOException {
 		StringTokenizer st = new StringTokenizer(br.readLine());
