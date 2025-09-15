@@ -1,32 +1,28 @@
 import java.util.*;
-
 class Solution {
     public int[] solution(String s) {
-        String[] arr = s.substring(2, s.length() - 2).split("\\}\\,\\{");
-        List<String[]> list = new ArrayList<>();
-        for(String e : arr){
-            list.add(e.split(","));
-        }
-        Collections.sort(list, (a, b) -> a.length - b.length);
-        int[] answer = new int[list.size()];
-        for(int i = 0 ; i < answer.length ; i++){
-            String[] tmp = list.get(i);
-            for(int j = 0 ; j < list.get(i).length ; j++){
-                String a = list.get(i)[j];
-                boolean isContain = false;
-                for(int k = 0 ; k < i ; k++){
-                    if(answer[k] == Integer.parseInt(a)){
-                        isContain = true;
-                        break;
-                    }
-                }
-                if(!isContain){
-                    answer[i] = Integer.parseInt(a);
-                    break;
-                }
+        List<Integer> answer = new ArrayList<>();
+        s = s.replace("{{", "").replace("}}", "");
+        String[] strs = s.split("\\},\\{");
+        Arrays.sort(strs, (a,b) -> a.length() - b.length());
+        Set<Integer> set = new HashSet<>();
+        for(String str : strs){
+            String[] tmp = str.split(",");
+            int[] nums = new int[tmp.length];
+            for(int i = 0 ; i < nums.length ; i++){
+                nums[i] = Integer.parseInt(tmp[i]);
             }
+            for(int num : nums){
+                if(set.contains(num)) continue;
+                set.add(num);
+                answer.add(num);
+            }
+            
         }
-        
-        return answer;
+        int[] ans = new int[answer.size()];
+        for(int i = 0 ; i < answer.size() ; i++){
+            ans[i] = answer.get(i);
+        }
+        return ans;
     }
 }
