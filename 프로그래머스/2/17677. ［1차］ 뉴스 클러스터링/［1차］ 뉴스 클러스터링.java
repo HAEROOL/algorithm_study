@@ -8,7 +8,7 @@ class Solution {
             if(str.matches("[a-zA-Z]{2}"))
                 A.add(str.toLowerCase());
         }
-        
+
         List<String> B = new ArrayList<>();
         for(int i = 0 ; i < str2.length() - 1 ; i++){
             String str = str2.substring(i, i+2);
