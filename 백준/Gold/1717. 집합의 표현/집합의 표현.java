@@ -1,61 +1,46 @@
-import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.IOError;
-import java.io.IOException;
-import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.StringTokenizer;
+import java.util.*;
+import java.io.*;
 
 public class Main {
 	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
 	static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
 	static int N, M;
-	static int[] parent;
-	static void makeSet() {
-		parent = new int[N + 1];
-		for(int i = 0 ; i < N + 1 ; i++) {
-			parent[i] = i;
-		}
-	}
+	static int[] parents;
 	static int find(int x) {
-		if(parent[x] == x) {
+		if(parents[x] == x) {
 			return x;
 		}
-		return parent[x] = find(parent[x]);
+		return parents[x] = find(parents[x]);
 	}
-	static void union(int a, int b) {
-		a = find(a);
-		b = find(b);
-		if(a <= b) {
-			parent[b] = a;
+	static void union(int x, int y) {
+		x = find(x);
+		y = find(y);
+		
+		if(x >= y) {
+			parents[x] = y;
 		}else {
-			parent[a] = b;
+			parents[y] = x;
 		}
 	}
-	public static void main(String[] args) throws IOException{
+	public static void main(String[] args) throws IOException {
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		N = Integer.parseInt(st.nextToken());
 		M = Integer.parseInt(st.nextToken());
-		makeSet();
+		parents = new int[N + 1];
+		for(int i = 0 ; i < N + 1 ; i++) {
+			parents[i] = i;
+		}
 		for(int i = 0 ; i < M ; i++) {
 			st = new StringTokenizer(br.readLine());
-			int cmd = Integer.parseInt(st.nextToken());
+			int c = Integer.parseInt(st.nextToken());
 			int a = Integer.parseInt(st.nextToken());
 			int b = Integer.parseInt(st.nextToken());
-			if(cmd == 1) {
-				if(find(a) == find(b)) {
-					bw.write("YES\n");
-				}else {
-					bw.write("NO\n");
-				}
-			}else {
+			if(c == 0) {
 				union(a, b);
+			}else {	
+				bw.write(find(a) == find(b)?"YES\n":"NO\n");
 			}
 		}
 		bw.close();
 	}
-
 }
