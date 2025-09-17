@@ -1,5 +1,4 @@
 import java.util.*;
-
 class Solution {
     static boolean isPrime(long N) {
     if (N < 2) return false;
@@ -12,19 +11,14 @@ class Solution {
 }
     public int solution(int n, int k) {
         int answer = 0;
-        String prime = Integer.toString(n, k);
-        // checkPrime(n);
-        
-        String[] arr = prime.split("0");
-        // System.out.println(Arrays.toString(arr));
-        for(String s : arr){
-            
+        String[] num = Integer.toString(n, k).split("0");
+        for(String s : num){
             if(s.equals("")) continue;
-            long num = Long.parseLong(s);
-            if(isPrime(num)){
+            if(isPrime(Long.parseLong(s))){
                 answer++;
             }
         }
+        System.out.println(Arrays.toString(num));
         return answer;
     }
 }
