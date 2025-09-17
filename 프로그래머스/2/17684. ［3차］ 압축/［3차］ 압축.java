@@ -9,28 +9,24 @@ class Solution {
             String ascii = String.valueOf((char)code);
             dict.put(ascii, i);
         }
-        String[] msgs = msg.split("");
-        String token = "";
-        int codeVal = 27;
-        int i = 0;
-        while(i < msgs.length){
-            String tmp = msgs[i];
-            if(!dict.containsKey(token + tmp)){
-                dict.put(token + tmp, codeVal);
-                codeVal++;
-                answer.add(dict.get(token));
-                // System.out.println(i + " " + (token + msgs[i]) + " " + " added");
-                token = tmp;
-                i++;
-                continue;
+        String[] strs = msg.split("");
+        String w = strs[0];
+        int id = 27;
+        for(int i = 1 ; i < strs.length ; i++ ){
+            String c = strs[i];
+            String wc = w + c;
+            if(dict.containsKey(wc)){
+                w = wc;
+            }else{
+                answer.add(dict.get(w));
+                dict.put(wc, id++);
+                w = c;
             }
-            token += tmp;
-            i++;
         }
-        answer.add(dict.get(token));
+        answer.add(dict.get(w));
         int[] ans = new int[answer.size()];
-        for(int idx = 0 ; idx < ans.length ; idx++){
-            ans[idx] = answer.get(idx);
+        for(int i = 0 ; i < ans.length ; i++){
+            ans[i] = answer.get(i);
         }
         return ans;
     }
