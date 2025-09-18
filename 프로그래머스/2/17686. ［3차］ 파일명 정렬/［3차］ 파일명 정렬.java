@@ -1,61 +1,78 @@
 import java.util.*;
 
 class Solution {
+    static String REGEX = "[0-9]+";
+
     static String[] parseString(String file){
-        // 1) res를 빈 문자열로 초기화
-        String[] res = {"", "", ""};
-        int state = 0;  // 0=head, 1=number, 2=tail
-
-        for (char c : file.toCharArray()) {
-            if (state == 0 && Character.isDigit(c)) {
-                state = 1;
-            } else if (state == 1 && !Character.isDigit(c)) {
-                state = 2;
+        String[] str = file.split("");
+        String[] res = new String[3];
+        Arrays.fill(res, "");
+        String token = "";
+        int i = 0;
+        for(String s : str){
+            if(i == 0){
+                if(s.matches(REGEX)){
+                    res[i] = token;
+                    token = s;
+                    i++;
+                }else{
+                    token += s;    
+                }
+            }else if(i == 1){
+                if(!s.matches(REGEX)){
+                    res[i] = token;
+                    token = s;
+                    i++;
+                }else{
+                    token += s;
+                }
+            }else{
+                token += s;
             }
-
-            if (state == 0)       res[0] += c;
-            else if (state == 1)  res[1] += c;
-            else                  res[2] += c;
         }
+        res[i] = token;
         return res;
     }
-
-    static class File {
-        String head, headLower, number, tail;
-        int     id;
-        File(String h, String num, String t, int idx) {
-            head       = h;
-            headLower  = h.toLowerCase();
-            number     = num;
-            tail       = t;
-            id         = idx;
+    static class File{
+        String name;
+        String orderName;
+        String tail;
+        int id;
+        String number;
+        File(String name, int id, String number, String tail){
+            this.name = name;
+            this.orderName = name.toLowerCase();
+            this.id = id;
+            this.number = number;
+            this.tail = tail;
         }
-        String original() { return head + number + tail; }
     }
-
     public String[] solution(String[] files) {
-        List<File> list = new ArrayList<>();
-        for (int i = 0; i < files.length; i++) {
-            String[] p = parseString(files[i]);
-            list.add(new File(p[0], p[1], p[2], i));
-        }
-
-        // 안정 정렬 보장되는 List.sort()
-        list.sort((a, b) -> {
-            int cmp = a.headLower.compareTo(b.headLower);
-            if (cmp != 0) return cmp;
-
-            int na = Integer.parseInt(a.number);
-            int nb = Integer.parseInt(b.number);
-            if (na != nb) return na - nb;
-
-            // HEAD 같고 숫자 값도 같으면, 입력 순서
-            return a.id - b.id;
+        String[] answer = {};
+        PriorityQueue<File> q = new PriorityQueue<>((a, b) -> {
+            if(a.orderName.equals(b.orderName)){
+                if(Integer.parseInt(a.number) == Integer.parseInt(b.number)){
+                    return a.id - b.id;
+                }
+                return Integer.parseInt(a.number) - Integer.parseInt(b.number);
+            }
+            return a.orderName.compareTo(b.orderName);
         });
-
-        String[] answer = new String[list.size()];
-        for (int i = 0; i < list.size(); i++) {
-            answer[i] = list.get(i).original();
+        int id = 0;
+        for(String file : files){
+            String[] res = parseString(file);
+            String head = res[0];
+            String number = res[1];
+            String tail =  res[2];
+            // System.out.println(head + " " + number + " " + tail);
+            q.offer(new File(head, id++, number, tail));
+        }
+        answer = new String[q.size()];
+        int idx = 0;
+        while(!q.isEmpty()){
+            File f = q.poll();
+            String r = f.name + f.number + f.tail;
+            answer[idx++] = r;
         }
         return answer;
     }
