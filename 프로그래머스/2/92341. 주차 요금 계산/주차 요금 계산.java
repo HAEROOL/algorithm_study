@@ -7,7 +7,6 @@ class Solution {
         return Integer.parseInt(temp[0])*60 + Integer.parseInt(temp[1]);
     }
     public int[] solution(int[] fees, String[] records) {
-
         TreeMap<String, Integer> map = new TreeMap<>();
 
         for(String record : records) {
