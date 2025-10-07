@@ -1,51 +1,54 @@
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.InputStreamReader;
-import java.util.LinkedList;
-import java.util.Queue;
- 
-public class Main {
- 
-    public static void main(String args[]) throws Exception {
-        BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
-        String[] str = br.readLine().split(" ");
- 
-        int F = Integer.parseInt(str[0]);
-        int S = Integer.parseInt(str[1]);
-        int G = Integer.parseInt(str[2]);
-        int U = Integer.parseInt(str[3]);
-        int D = Integer.parseInt(str[4]);
-        int[] arr = new int[F + 1];
-        System.out.println(BFS(F, S, G, U, D, arr));
- 
-    }
- 
-    public static String BFS(int Floor, int start, int end, int up, int down, int[] arr) {
-        Queue<Integer> q = new LinkedList<Integer>();
-        q.add(start);
-        arr[start] = 1;
- 
-        while (!q.isEmpty()) {
-            int current = q.poll();
-            if (current == end) {
-                return String.valueOf(arr[current] - 1);
-            }
-            if (current + up <= Floor) {
-                if (arr[current + up] == 0) {
-                    arr[current + up] = arr[current] + 1;
-                    q.add(current + up);
-                }
- 
-            }
+import java.util.*;
+import java.io.*;
 
-            if (current - down > 0) {
-                if (arr[current - down] == 0) {
-                    arr[current - down] = arr[current] + 1;
-                    q.add(current - down);
-                }
-            }
- 
-        }
-        return "use the stairs";
-    }
+public class Main {
+	static BufferedReader br = new BufferedReader(new InputStreamReader(System.in));
+	static BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(System.out));
+	public static void main(String[] args) throws IOException {
+		StringTokenizer st = new StringTokenizer(br.readLine());
+		int F = Integer.parseInt(st.nextToken());
+		int S = Integer.parseInt(st.nextToken());
+		int G = Integer.parseInt(st.nextToken());
+		int U = Integer.parseInt(st.nextToken());
+		int D = Integer.parseInt(st.nextToken());
+		boolean[] v = new boolean[F + 1];
+		Deque<int[]> q = new ArrayDeque<int[]>();
+		
+		q.offer(new int[] {S, 0});
+		v[S] = true;
+		int answer = -1;
+		while(!q.isEmpty()) {
+			int[] f = q.poll();
+			int floor = f[0];
+			int cnt = f[1];
+			
+			if(floor == G) {
+				answer = cnt;
+				break;
+			}
+			
+			int uf = floor + U;
+			int df = floor - D;
+			
+			if(uf <= F && !v[uf]) {
+//				System.out.println(uf);
+				q.offer(new int[] {uf, cnt + 1});
+				v[uf] = true;
+			}
+			if(df > 0 && !v[df]) {
+				q.offer(new int[] {df, cnt + 1});
+				v[df] = true;
+			}
+			
+			
+		}
+		if(answer == -1) {
+			bw.write("use the stairs");			
+		}else {
+			bw.write(answer + "");
+		}
+		bw.close();
+		
+		
+	}
 }
