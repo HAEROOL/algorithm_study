@@ -1,10 +1,10 @@
 # [level 3] 주사위 고르기 - 258709 
 
-[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/258709?language=java) 
+[문제 링크](https://school.programmers.co.kr/learn/courses/30/lessons/258709) 
 
 ### 성능 요약
 
-메모리: 132 MB, 시간: 771.18 ms
+메모리: 131 MB, 시간: 736.14 ms
 
 ### 구분
 
@@ -16,7 +16,7 @@
 
 ### 제출 일자
 
-2025년 10월 08일 14:20:17
+2025년 10월 09일 01:38:31
 
 ### 문제 설명
 
