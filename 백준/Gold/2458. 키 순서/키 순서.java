@@ -7,41 +7,45 @@ public class Main {
 	public static void main(String[] args) throws IOException {
 		StringTokenizer st = new StringTokenizer(br.readLine());
 		int N = Integer.parseInt(st.nextToken());
+		
 		int M = Integer.parseInt(st.nextToken());
-		int[][] map = new int[N + 1][N + 1];
-		for(int i = 0 ; i < N + 1 ; i++) {
-			for(int j = 0 ; j < N + 1 ; j++) {
-				map[i][j] = Integer.MAX_VALUE >> 1;
-				if(i == j) map[i][j] = 0;
-			}
-		}
+		
+		int[][] f = new int[N + 1][N + 1];
+		
+		
 		for(int i = 0 ; i < M ; i++) {
 			st = new StringTokenizer(br.readLine());
-			int from = Integer.parseInt(st.nextToken());
-			int to = Integer.parseInt(st.nextToken());
-			map[from][to] = 1;
+			int a = Integer.parseInt(st.nextToken());
+			int b = Integer.parseInt(st.nextToken());
+			f[a][b] = 1;
 		}
 		
 		for(int k = 1 ; k < N + 1 ; k++) {
-			for(int i = 1 ; i < N + 1 ; i++) {
-				for(int j = 1 ; j < N + 1 ; j++) {
-					if(map[i][j] > map[i][k] + map[k][j]) {
-						map[i][j] = 1;
+			for(int j = 1 ; j < N + 1 ; j++) {
+				for(int i = 1 ; i < N  + 1 ; i++) {
+					if(f[i][k] == 1 && f[k][j] == 1) {
+						f[i][j] = 1;
 					}
 				}
 			}
 		}
+//		for(int[] row : f) {
+//			System.out.println(Arrays.toString(row));
+//		}
 		int answer = 0;
 		for(int i = 1 ; i < N + 1 ; i++) {
 			int cnt = 0;
 			for(int j = 1 ; j < N + 1 ; j++) {
-				if(map[i][j] == 1 || map[j][i] == 1) {
-					cnt++;
-				}
+				if(i == j) continue;
+				if(f[j][i] == 1) cnt++;
+			}
+			for(int j = 1 ; j < N + 1 ; j++) {
+				if(i == j) continue;
+				if(f[i][j] == 1) cnt++;
 			}
 			if(cnt == N - 1) answer++;
 		}
-		bw.write(answer+"");
+		bw.write(answer +"");
 		bw.close();
 	}
 }
