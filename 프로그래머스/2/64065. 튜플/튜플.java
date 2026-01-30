@@ -1,27 +1,19 @@
 import java.util.*;
 class Solution {
     public int[] solution(String s) {
-        List<Integer> answer = new ArrayList<>();
+        
         s = s.replace("{{", "").replace("}}", "");
-        String[] strs = s.split("\\},\\{");
-        Arrays.sort(strs, (a,b) -> a.length() - b.length());
-        Set<Integer> set = new HashSet<>();
-        for(String str : strs){
-            String[] tmp = str.split(",");
-            int[] nums = new int[tmp.length];
-            for(int i = 0 ; i < nums.length ; i++){
-                nums[i] = Integer.parseInt(tmp[i]);
+        String[] tmp = s.split("\\},\\{");
+        Arrays.sort(tmp, (a, b) -> a.length() - b.length());
+        int[] ans = new int[tmp.length];
+        Set<String> set = new HashSet<>();
+        for(int i = 0 ; i < tmp.length ; i++){
+            String[] token = tmp[i].split(",");
+            for(String t : token){
+                if(set.contains(t)) continue;
+                ans[i] = Integer.parseInt(t);
+                set.add(t);
             }
-            for(int num : nums){
-                if(set.contains(num)) continue;
-                set.add(num);
-                answer.add(num);
-            }
-            
-        }
-        int[] ans = new int[answer.size()];
-        for(int i = 0 ; i < answer.size() ; i++){
-            ans[i] = answer.get(i);
         }
         return ans;
     }
