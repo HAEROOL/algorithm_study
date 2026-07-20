@@ -1,64 +1,54 @@
 import java.util.*;
-class Solution {
-    static int mx;
-    static int[] ans;
-    static int[] INFO;
 
-    static void dfs(int arrow, int depth, int atotal, int btotal, int[] arr){
-        if(depth == INFO.length){
-            if(atotal < btotal){
-                int total = btotal - atotal;
-                if(arrow != 0){
-                    arr[10] = arrow;
+class Solution {
+    static int N;
+    static int[] info;
+    static int[] answer;
+    static int mx;
+    static boolean isBetter(int[] sel, int[] ans){
+        for(int i = sel.length - 1 ; i > -1 ; i--){
+            if(sel[i] > ans[i]) return true;
+            if(sel[i] < ans[i]) return false;
+        }
+        return false;
+    }
+    static void dfs(int idx, int total, int leftScore, int leftArrow, int[] sel, int pscore){
+        if(idx == sel.length){
+            if(pscore < total){
+                sel[10] += leftArrow;
+                if(mx == total - pscore){
+                    if(isBetter(sel, answer)) answer = sel.clone();
+                }else if(mx < total - pscore){
+                    mx = total - pscore;
+                    answer = sel.clone();
                 }
-                if(total > mx){
-                    System.out.println(Arrays.toString(ans) + " " + arrow);
-                    for(int i = 0 ; i < 11 ; i++){
-                        ans[i] = arr[i];
-                    }
-                    mx = total;
-                }else if(mx == total){
-                    for(int i = 10 ; i > -1 ; i--){
-                        if(ans[i] < arr[i]){
-                            for(int j = 0 ; j< 11 ; j++){
-                                ans[j] = arr[j];
-                            }
-                            break;
-                        }else if(ans[i] > arr[i]){
-                            break;
-                        }
-                    }
-                }
+                sel[10] -= leftArrow;;
             }
-            arr[10] = 0;
             return;
         }
-        int tmp = atotal;
-        if(INFO[depth] != 0){
-            tmp += 10 - depth;
-        }
-        dfs(arrow, depth + 1, tmp, btotal, arr);
-        if(INFO[depth] + 1 <= arrow){
-            arr[depth] = INFO[depth] + 1;
-            dfs(arrow - INFO[depth] - 1, depth + 1, atotal, btotal + 10 - depth, arr);
-            arr[depth] = 0;
-        }
         
-        
+        if(leftArrow >= info[idx] + 1){
+            sel[idx] = info[idx] + 1;
+            if(info[idx] > 0) pscore -= 10 - idx;
+            dfs(idx + 1, total + (10 - idx), leftScore - (10 - idx), leftArrow - info[idx] - 1, sel, pscore);    
+            if(info[idx] > 0) pscore += 10 - idx;
+            sel[idx] = 0;
+        }
+        dfs(idx + 1, total, leftScore - (10 - idx), leftArrow, sel, pscore);
     }
     public int[] solution(int n, int[] info) {
-        ans = new int[11];
-        INFO = info;
-        mx = 0;
-        int atotal = 0;
+        this.info = info;
+        answer = new int[info.length];
+        N = n;
+        mx = -1;
+        int pscore = 0;
         for(int i = 0 ; i < 11 ; i++){
-            if(info[i] != 0){
-                atotal += 10 - i;
+            if(info[i] > 0){
+                pscore += 10 - i;
             }
         }
-        dfs(n, 0, 0, 0, new int[11]);
-        if(mx <= 0) return new int[]{-1};
-        System.out.println(Arrays.toString(ans) + " " + mx);
-        return ans;
+        dfs(0, 0, 55, N, new int[11], pscore);
+        if(mx == -1) answer = new int[]{-1};
+        return answer;
     }
 }
