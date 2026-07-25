@@ -1,47 +1,43 @@
 import java.util.*;
 
 class Solution {
-    static List<Integer>[] map;
-    static int[] INFO;
-    static int ans = 0;
+    static int[] info;
     static boolean[] v;
-    static void dfs(int now, List<Integer> candi, int wolf, int sheep){
-        // System.out.println(now + " " + sheep + " " + wolf);
-        List<Integer> tmp = new ArrayList<Integer>(candi);
-        for(int n : map[now]){
-            if(!v[n]) tmp.add(n);
+    static void dfs(int now, List<Integer> tmp, int sheep, int wolf){
+        List<Integer> nexts = new ArrayList<>(tmp);
+        for(int i : tree[now]){
+            if(!v[i]) nexts.add(i);
         }
-        for(int next : tmp){
-            if(!v[next] && INFO[next] == 0){
+        
+        for(int next : nexts){
+            if(!v[next] && info[next] == 0){
                 v[next] = true;
-                dfs(next, tmp, wolf, sheep + 1);
+                dfs(next, nexts, sheep + 1, wolf);
                 v[next] = false;
-            }else if(!v[next] && INFO[next] == 1 && wolf + 1 < sheep){
-                v[next] = false;
-                dfs(next, tmp, wolf + 1, sheep);
-                v[next] = false;
+            }else if(!v[next] && info[next] == 1){
+                if(wolf + 1 < sheep){
+                    v[next] = true;
+                    dfs(next, nexts, sheep, wolf + 1);
+                    v[next] = false;
+                }
             }
         }
-        ans = Math.max(ans, sheep);
+        answer = Math.max(answer, sheep);
     }
+    static ArrayList<Integer>[] tree;
+    static int answer;
     public int solution(int[] info, int[][] edges) {
-        int answer = 0;
-        INFO = info;
-        map = new ArrayList[info.length];
+        answer = 0;
+        this.info = info;
+        tree = new ArrayList[info.length];
         v = new boolean[info.length];
-        for(int i = 0 ; i < info.length ; i++){
-            map[i] = new ArrayList<Integer>();
+        for(int i = 0 ; i < info.length ; i++) tree[i] = new ArrayList<Integer>();
+        for(int[] e : edges){
+            tree[e[0]].add(e[1]);
+            tree[e[1]].add(e[0]);
         }
-        for(int[] nodes : edges){
-            int from = nodes[0];
-            int to = nodes[1];
-            map[from].add(to);
-            map[to].add(from);
-        }
-
-        int st = 0;
-        INFO[0] = -1;
-        dfs(0, new ArrayList<Integer>(), 0, 1);
-        return ans;
+        v[0] = true;
+        dfs(0, new ArrayList<>(), 1, 0);
+        return answer;
     }
 }
